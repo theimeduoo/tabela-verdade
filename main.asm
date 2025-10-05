@@ -10,8 +10,6 @@
 .globl main
 
 main:
-
-	#------ LEITURA DE VALORES ------ #
 	#Ler o valor de A
 	li $v0, 4
 	la $a0, valorA
@@ -39,13 +37,10 @@ main:
 	syscall
 	move $t3, $v0 #Guarda o valor de C em $t3
 
+	#Fazer o processamento das entradas enviadas
 	jal func
 	
-	# --- DEPOIS DE CALCULADO O RESULTADO --- #
-	la $a0, resultado
-	li $v0, 1
-	syscall
-	
+	#Após o processamento, mostrar na tela o resultado
 	move $a0, $v0
 	li $v0, 1
 	syscall
@@ -59,7 +54,7 @@ main:
 #A = $t1
 #B = $t2
 #C = $t3
-			
+
 func:
 	xori $t4, $t1, 1 # $t4 = !A
 	xori $t5, $t2, 1 # $t5 = !B
@@ -81,4 +76,7 @@ func:
 	and $v0, $v0, $t9 # (A+B+C) * (A+!B+!C) * (!A+B+!C)
 	and $v0, $v0, $t0 # (A+B+C) * (A+!B+!C) * (!A+B+!C) * (!A+!B+!C)
 	
+	and $v0, $v0, 1 #Retorna somente o último bit pois é o que precisamos como resultado
+	
+	#Retornar aonde parou na label main
 	jr $ra
