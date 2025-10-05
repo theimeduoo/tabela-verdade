@@ -36,7 +36,12 @@ main:
 	li $v0, 5
 	syscall
 	move $t3, $v0 #Guarda o valor de C em $t3
-
+	
+	#Mostrar mensagem "Resultado: "
+	li $v0, 4
+	la $a0, resultado
+	syscall
+	
 	#Fazer o processamento das entradas enviadas
 	jal func
 	
@@ -45,15 +50,9 @@ main:
 	li $v0, 1
 	syscall
 	
+	#Finaliza o programa
 	li $v0, 10
 	syscall
-	
-	
-#(A+B+C) * (A+!B+!C) * (!A+B+!C) * (!A+!B+!C)
-
-#A = $t1
-#B = $t2
-#C = $t3
 
 func:
 	xori $t4, $t1, 1 # $t4 = !A
@@ -61,10 +60,10 @@ func:
 	xori $t6, $t3, 1 # $t6 = !C
 
 	or $t7, $t1, $t2 # (A + B)
-	or $t7, $t4, $t3 # (A + B) + C
+	or $t7, $t7, $t3 # (A + B) + C
 	
 	or $t8, $t1, $t5 # (A + !B)
-	or $t8, $t8, $t3 # (A + !B) + !C
+	or $t8, $t8, $t6 # (A + !B) + !C
 	
 	or $t9, $t4, $t2 # (!A + B)
 	or $t9, $t9, $t6 # (!A + B) + !C
@@ -75,8 +74,6 @@ func:
 	and $v0, $t7, $t8 # (A+B+C) * (A+!B+!C)
 	and $v0, $v0, $t9 # (A+B+C) * (A+!B+!C) * (!A+B+!C)
 	and $v0, $v0, $t0 # (A+B+C) * (A+!B+!C) * (!A+B+!C) * (!A+!B+!C)
-	
-	and $v0, $v0, 1 #Retorna somente o último bit pois é o que precisamos como resultado
 	
 	#Retornar aonde parou na label main
 	jr $ra
