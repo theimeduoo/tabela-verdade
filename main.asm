@@ -9,8 +9,12 @@
 .text
 .globl main
 
+var:
+ li $t1, 0 #i = 0
+ li $t2, 8 #Índice final do loop
+
 main:
-	#Ler o valor de A
+ #Ler o valor de A
 	li $v0, 4
 	la $a0, valorA
 	syscall
@@ -49,6 +53,10 @@ main:
 	li $v0, 1
 	syscall
 	
+ #Volta para main se i < 8
+ addi $t1, $t1, 1
+ ble $t1, $t2, main
+
 	#Finaliza o programa
 	li $v0, 10
 	syscall
