@@ -1,8 +1,8 @@
 .data
 
-	valorA: 	.asciiz	"Digite o valor A (0/1): "
-	valorB: 	.asciiz "Digite o valor B (0/1): "
-	valorC: 	.asciiz "Digite o valor C (0/1): "
+	valorA: 	.asciiz	"Digite o valor A: "
+	valorB: 	.asciiz "Digite o valor B: "
+	valorC: 	.asciiz "Digite o valor C: "
 	
 	resultado:	.asciiz "Resultado: "
 
@@ -17,7 +17,7 @@ main:
 	
 	li $v0, 5
 	syscall
-	move $t1, $v0 #Guarda o valor de A em $t1
+	move $a1, $v0 #Guarda o valor de A em $a1
 	
 	#Ler o valor de B
 	li $v0, 4
@@ -26,8 +26,7 @@ main:
 	
 	li $v0, 5
 	syscall
-	move $t2, $v0 #Guarda o valor de B em $t2
-	
+	move $a2, $v0 #Guarda o valor de B em $a2	
 	#Ler o valor de C
 	li $v0, 4
 	la $a0, valorC
@@ -35,7 +34,7 @@ main:
 	
 	li $v0, 5
 	syscall
-	move $t3, $v0 #Guarda o valor de C em $t3
+	move $a3, $v0 #Guarda o valor de C em $a3
 	
 	#Mostrar mensagem "Resultado: "
 	li $v0, 4
@@ -44,7 +43,7 @@ main:
 	
 	#Fazer o processamento das entradas enviadas
 	jal func
-	
+
 	#Após o processamento, mostrar na tela o resultado
 	move $a0, $v0
 	li $v0, 1
@@ -55,25 +54,25 @@ main:
 	syscall
 
 func:
-	xori $t4, $t1, 1 # $t4 = !A
-	xori $t5, $t2, 1 # $t5 = !B
-	xori $t6, $t3, 1 # $t6 = !C
+	xori $t4, $a1, 1 # $t4 = !A
+	xori $t5, $a2, 1 # $t5 = !B
+	xori $t6, $a3, 1 # $t6 = !C
 
-	or $t7, $t1, $t2 # (A + B)
-	or $t7, $t7, $t3 # (A + B) + C
+	or $t7, $a1, $a2 # (A + B)
+	or $t7, $t7, $a3 # (A + B) + C
 	
-	or $t8, $t1, $t5 # (A + !B)
+	or $t8, $a1, $t5 # (A + !B)
 	or $t8, $t8, $t6 # (A + !B) + !C
 	
-	or $t9, $t4, $t2 # (!A + B)
+	or $t9, $t4, $a2 # (!A + B)
 	or $t9, $t9, $t6 # (!A + B) + !C
 	
 	or $t0, $t4, $t5 # (!A + !B)
 	or $t0, $t0, $t6 # (!A + !B) + !C
 	
 	and $v0, $t7, $t8 # (A+B+C) * (A+!B+!C)
-	and $v0, $v0, $t9 # (A+B+C) * (A+!B+!C) * (!A+B+!C)
-	and $v0, $v0, $t0 # (A+B+C) * (A+!B+!C) * (!A+B+!C) * (!A+!B+!C)
+	and $v1, $t9, $t0 # (!A+B+!C) * (!A+!B+!C)
+	and $v0, $v0, $v1 # ((A+B+C) * (A+!B+!C)) * ((!A+B+!C) * (!A+!B+!C))
 	
 	#Retornar aonde parou na label main
 	jr $ra
