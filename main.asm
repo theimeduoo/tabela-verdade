@@ -3,6 +3,7 @@
 	valorA: 	.asciiz	"Digite o valor A: "
 	valorB: 	.asciiz "Digite o valor B: "
 	valorC: 	.asciiz "Digite o valor C: "
+	breakline:		.asciiz "\n"
 	
 	resultado:	.asciiz "Resultado: "
 
@@ -10,8 +11,8 @@
 .globl main
 
 var:
- li $t1, 0 #i = 0
- li $t2, 8 #Índice final do loop
+	li $t1, 0 #i = 0
+	li $t2, 8 #Índice final do loop
 
 main:
  #Ler o valor de A
@@ -53,9 +54,13 @@ main:
 	li $v0, 1
 	syscall
 	
- #Volta para main se i < 8
- addi $t1, $t1, 1
- ble $t1, $t2, main
+	li $v0, 4
+	la $a0, breakline
+	syscall
+	
+ 	#Volta para main se i < 8
+	addi $t1, $t1, 1
+	blt $t1, $t2, main
 
 	#Finaliza o programa
 	li $v0, 10
