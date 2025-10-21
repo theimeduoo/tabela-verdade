@@ -1,11 +1,11 @@
 .data
 
-	valorA: 	.asciiz	"Digite o valor A: "
-	valorB: 	.asciiz "Digite o valor B: "
-	valorC: 	.asciiz "Digite o valor C: "
-	breakline:		.asciiz "\n"
+	valorA:    .asciiz	"Digite o valor A: "
+	valorB:    .asciiz 	"Digite o valor B: "
+	valorC:    .asciiz 	"Digite o valor C: "
+	breakline: .asciiz 	"\n"
 	
-	resultado:	.asciiz "Resultado: "
+	resultado: .asciiz 	"Resultado: "
 
 .text
 .globl main
@@ -15,7 +15,7 @@ var:
 	li $t2, 8 #Índice final do loop
 
 main:
- #Ler o valor de A
+ 	#Ler o valor de A
 	li $v0, 4
 	la $a0, valorA
 	syscall
@@ -31,7 +31,8 @@ main:
 	
 	li $v0, 5
 	syscall
-	move $a2, $v0 #Guarda o valor de B em $a2	
+	move $a2, $v0 #Guarda o valor de B em $a2
+		
 	#Ler o valor de C
 	li $v0, 4
 	la $a0, valorC
@@ -67,9 +68,9 @@ main:
 	syscall
 
 func:
-	xori $t4, $a1, 1 # $t4 = !A
-	xori $t5, $a2, 1 # $t5 = !B
-	xori $t6, $a3, 1 # $t6 = !C
+	xori $t4, $a1, 00000000000000000000000000000001 # $t4 = !A
+	xori $t5, $a2, 00000000000000000000000000000001 # $t5 = !B
+	xori $t6, $a3, 00000000000000000000000000000001 # $t6 = !C
 
 	or $t7, $a1, $a2 # (A + B)
 	or $t7, $t7, $a3 # (A + B) + C
